@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.gesecur.app.vigilant",
+  "variantName": "processVigilantReleaseResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 7,
+      "versionName": "2.7",
+      "outputFile": "v2.7 (7)-vigilant-release.apk"
+    }
+  ]
+}
