@@ -258,6 +258,7 @@ interface GesecurService {
         @Field("vigilante_id") userId: Long,
         @Field("lat") lat: Double,
         @Field("lon") lon: Double,
+        @Field("cuadrante_id") cuadranteId: Long,
     ): BaseResponse<Long>
 
     @POST("app/turno/finish")

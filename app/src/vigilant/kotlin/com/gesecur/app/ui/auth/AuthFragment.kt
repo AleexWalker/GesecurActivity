@@ -20,11 +20,11 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     private val viewModel by viewModel<AuthViewModel>()
 
     override fun setupViews() {
-        binding.btnLogin.setOnClickListener { doLogin()
-            /**Log.e("PRUEBA CÓDIGO", getLoginCode())
+        binding.btnLogin.setOnClickListener {
+            Log.e("PRUEBA CÓDIGO", getLoginCode())
             val intentVigilantServices = Intent(activity, ServicesExperimental::class.java)
             intentVigilantServices.putExtra("vigilantCode", getLoginCode())
-            startActivity(intentVigilantServices)*/
+            startActivity(intentVigilantServices)
         }
 
         if(BuildConfig.DEBUG) {

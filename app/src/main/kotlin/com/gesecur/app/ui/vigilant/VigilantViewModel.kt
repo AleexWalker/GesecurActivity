@@ -165,10 +165,10 @@ class VigilantViewModel(
         turnTimer!!.start()
     }
 
-    fun startTurn(lat: Double, lon: Double) = launch {
+    fun startTurn(lat: Double, lon: Double, cuadranteId: Long) = launch {
         _viewState.value = State.Loading
 
-        when (val result = vigilantRepository.startTurn(currentUser!!.id, lat, lon)) {
+        when (val result = vigilantRepository.startTurn(currentUser!!.id, lat, lon, cuadranteId)) {
             is Either.Right -> {
                 _viewState.value = State.Success
 

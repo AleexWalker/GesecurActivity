@@ -39,7 +39,6 @@ class VigilantFragment : BaseFragment(R.layout.fragment_vigilant) {
 
         binding.tablayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.e("PRUEBA 4", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                 navigateOnTabSelected(tab)
                 selectedTabPosition = tab?.position ?: 0
             }
@@ -53,7 +52,6 @@ class VigilantFragment : BaseFragment(R.layout.fragment_vigilant) {
 
         binding.tablayout.getTabAt(selectedTabPosition)?.select()
 
-        Log.e("PRUEBA 2", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
         (requireActivity() as VigilantActivity).setToolbarExtra(R.drawable.ic_exit) {
             showConfirm(R.string.VIGILANT_EXIT_QUESTION, { p0, p1 ->
@@ -71,7 +69,6 @@ class VigilantFragment : BaseFragment(R.layout.fragment_vigilant) {
             })
         }
 
-        Log.e("PRUEBA 3", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     }
 
     private fun navigateOnTabSelected(tab: TabLayout.Tab?) {

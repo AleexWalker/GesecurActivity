@@ -106,13 +106,16 @@ class VigilantRepositoryImpl(
     override suspend fun startTurn(
         vigilantId: Long,
         lat: Double,
-        lon: Double
+        lon: Double,
+        cuadranteId: Long
     ): Either<GesecurError, Long> {
         return withContext(Dispatchers.IO) {
             Either.catch {
                 service.startTurn(
                     vigilantId,
-                    lat, lon
+                    lat,
+                    lon,
+                    cuadranteId
                 ).result
             }
                 .mapLeft { it.toError() }

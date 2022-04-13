@@ -13,7 +13,7 @@ interface SimpleaApi {
         @Path("vigilante") vigilanteId: Long
     ): Services
 
-    @POST("/app/turno/start")
+    @POST("app/turno/start")
     @FormUrlEncoded
     suspend fun postServicio(
         @Field("vigilante_id") vigilante_id: Long,

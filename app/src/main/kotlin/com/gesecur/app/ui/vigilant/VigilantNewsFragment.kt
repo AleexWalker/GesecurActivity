@@ -1,6 +1,9 @@
 package com.gesecur.app.ui.vigilant
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -31,6 +34,7 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
 
     private val binding by viewBinding(FragmentVigilantNewsBinding::bind)
     private val viewModel by sharedViewModel<VigilantViewModel>()
+    private var cuadranteId: Long = 0
 
     companion object {
         const val WORK_NAME = "scheduledNewsWork"
@@ -63,6 +67,7 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
                 viewModel.addNewRegistry(viewModel.currentTurn.value!!.id, NewsRegistry.TYPE.URGENT)
             }
         }
+
     }
 
     override fun stateManagedViewModels() = arrayListOf(viewModel)
@@ -111,8 +116,13 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
     private fun startTurn() {
         showLoadingDialog()
 
+        val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("datosPost", Context.MODE_PRIVATE)
+        cuadranteId = sharedPreferences.getLong("cuadranteId", 0)
+        Log.e("PRUEBA", cuadranteId.toString())
+
+
         requireActivity().getCurrentLocation {
-            it?.let { viewModel.startTurn(it.latitude, it.longitude) }
+            it?.let { viewModel.startTurn(it.latitude, it.longitude, cuadranteId) }
 
             manageKeepAliveNotification()
         }

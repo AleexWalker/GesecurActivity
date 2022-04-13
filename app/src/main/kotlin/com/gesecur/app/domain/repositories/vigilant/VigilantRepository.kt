@@ -15,5 +15,5 @@ interface VigilantRepository {
     suspend fun addNewTurnRegistry(vigilantId: Long, turnId: Long, typeId: NewsRegistry.TYPE): Either<GesecurError, OperationsResponse>
     suspend fun addNewTurnObservation(vigilantId: Long, turnId: Long, description: String): Either<GesecurError, OperationsResponse>
     suspend fun getTodayTurn(vigilantId: Long): Either<GesecurError, Turn?>
-    suspend fun startTurn(vigilantId: Long, lat: Double, lon: Double): Either<GesecurError, Long>
+    suspend fun startTurn(vigilantId: Long, lat: Double, lon: Double, cuadranteId: Long): Either<GesecurError, Long>
     suspend fun finishTurn(vigilantId: Long, turnId: Long, lat: Double, lon: Double): Either<GesecurError, OperationsResponse>}
