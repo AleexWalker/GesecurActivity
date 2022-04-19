@@ -1,7 +1,5 @@
 package com.gesecur.app.ui.vigilant.services.repository
 
-import com.gesecur.app.data.gesecur.GesecurService
-import com.gesecur.app.data.gesecur.responses.BaseResponse
 import com.gesecur.app.ui.vigilant.services.api.RetrofitInstance
 import com.gesecur.app.ui.vigilant.services.model.Services
 import retrofit2.Response

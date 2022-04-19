@@ -1,5 +1,7 @@
 package com.gesecur.app.ui.auth
 
+import android.content.SharedPreferences
+import android.util.Log
 import arrow.core.Either
 import com.gesecur.app.R
 import com.gesecur.app.domain.models.User
@@ -14,13 +16,14 @@ class AuthViewModel(
     val userRepository: UserRepository
 ) : BaseViewModel() {
 
+    private var id: Long = 0
 
     sealed class Action: BaseAction() {
         class OnUserLogged(val user: User) : Action()
     }
 
     fun login(code: String) = launch {
-        if(validateLoginData(code)) {
+            if(validateLoginData(code)) {
             when (val result = userRepository.loginVigilant(code)) {
                 is Either.Right -> {
                     _viewState.value = State.Success

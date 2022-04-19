@@ -1,6 +1,6 @@
 object App {
-    const val versionCode = 7
-    const val versionName = "2.7"
+    const val versionCode = 8
+    const val versionName = "2.8"
 }
 
 object Sdk {

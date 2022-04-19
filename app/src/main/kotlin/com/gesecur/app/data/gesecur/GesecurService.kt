@@ -43,7 +43,7 @@ interface GesecurService {
         @Path("user") userId: Long
     ): BaseResponse<User>
 
-    //Implementado para las importar los datos acerca del servicio de un vigilante
+    //Implementado para importar los datos acerca del servicio de un vigilante
     @GET("vigilantes/cuadrantes/contrato/servicio/vigilante/{user}/{vigilante}")
     suspend fun getServiciosVigilante(
         @Path("user") userId: Long,

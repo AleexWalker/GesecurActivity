@@ -21,10 +21,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
 
     override fun setupViews() {
         binding.btnLogin.setOnClickListener {
-            Log.e("PRUEBA CÓDIGO", getLoginCode())
-            val intentVigilantServices = Intent(activity, ServicesExperimental::class.java)
-            intentVigilantServices.putExtra("vigilantCode", getLoginCode())
-            startActivity(intentVigilantServices)
+            doLogin()
         }
 
         if(BuildConfig.DEBUG) {
@@ -52,13 +49,9 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
         }
     }
 
-    private fun getLoginCode(): String {
-        return binding.editCode.text.toString()
-    }
-
     private fun onUserLogged(user: User) {
-        val intent = VigilantActivity.createIntent(requireContext())
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        val intentServicesExperimental = Intent(activity, ServicesExperimental::class.java)
+        intentServicesExperimental.putExtra("vigilantId", user.id.toString())
+        startActivity(intentServicesExperimental)
     }
 }

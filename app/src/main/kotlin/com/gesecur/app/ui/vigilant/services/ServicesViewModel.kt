@@ -3,14 +3,19 @@ package com.gesecur.app.ui.vigilant.services
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.getOrElse
 import com.gesecur.app.data.gesecur.responses.BaseResponse
+import com.gesecur.app.domain.models.User
+import com.gesecur.app.domain.repositories.user.UserRepository
+import com.gesecur.app.domain.repositories.user.UserRepositoryImpl
 import com.gesecur.app.ui.vigilant.services.model.Services
 import com.gesecur.app.ui.vigilant.services.repository.Repository
 import com.gesecur.app.ui.vigilant.services.repository.RepositoryImpl
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.security.PrivateKey
 
-class ServicesViewModel (private val repository: Repository): ViewModel() {
+open class ServicesViewModel(private val repository: Repository): ViewModel() {
 
     val myResponseGet: MutableLiveData<Services> = MutableLiveData()
     val myResponsePost: MutableLiveData<Response<Long>> = MutableLiveData()
@@ -22,10 +27,7 @@ class ServicesViewModel (private val repository: Repository): ViewModel() {
         }
     }
 
-    /**fun postServicio(vigilante_id: Long, lat: Long, lon: Long, cuadrante_id: Long) {
-        viewModelScope.launch {
-            val response = repository.postServicio(vigilante_id, lat, lon, cuadrante_id)
-            myResponseServicio.value = response
-        }
+    /**fun getCurrentUser(): Long {
+        return currentUser!!.id
     }*/
 }

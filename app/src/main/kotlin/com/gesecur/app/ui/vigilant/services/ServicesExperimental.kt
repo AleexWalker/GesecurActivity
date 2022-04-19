@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gesecur.app.databinding.ActivityServicesExperimentalBinding
@@ -22,6 +21,8 @@ class ServicesExperimental(): AppCompatActivity() {
     private lateinit var binding: ActivityServicesExperimentalBinding
     private lateinit var viewModel: ServicesViewModel
 
+    private var vigilantId: Long = 0
+
     @SuppressLint("SetTextI18n", "LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +30,18 @@ class ServicesExperimental(): AppCompatActivity() {
         setContentView(binding.root)
         binding.toolbarTextDay.text = "${getCurrentDay()} ${getCurrentDayNumber()} de ${getCurrentMonth()}"
 
+        loadId()
+
+        /**
+         * @param repository: Variable para acceder al método @GET de cada vigilante en sí.
+         * @param itemWorkServices: ArrayList cargado con cada uno de los datos obtenidos de la llamada @GET.
+         * @param ViewModelFactory: Modelo de vista basado en la recepción de datos.
+         * @param viewModel: Administrar los datos recibidos desde la llamada @GET y posteriormente almacenarlos en un MutableList según el 'result' obtenido desde dicha llamada.
+         */
+
         val repository = Repository()
         val itemWorkServices = arrayListOf<ServicesCard>()
         val viewModelFactory = ServicesViewModelFactory(repository)
-
-        val userId: Intent = intent
-        var vigilantId = userId.getStringExtra("vigilantCode")?.toLong()
-        vigilantId = 371
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ServicesViewModel::class.java)
         viewModel.getServiciosVigilante(vigilantId, vigilantId)
@@ -54,7 +60,11 @@ class ServicesExperimental(): AppCompatActivity() {
                         result
                             .result[i]
                             .descripcion_contrato_servicio,
-                        "${result.result[i].fecha_ini.substring(5, 10)} - ${result.result[i].fecha_fin.substring(5, 10)}",
+                        "${result.result[i].fecha_ini.substring(
+                                5,
+                                10
+                            )
+                        } - ${result.result[i].fecha_fin.substring(5, 10)}",
                         result.result[i].cuadrante_id.toString(),
                         result.result[i].vigilante_id.toString()
                     )
@@ -68,7 +78,12 @@ class ServicesExperimental(): AppCompatActivity() {
                         val postLatitud = location.latitude.toString()
                         val postLongitud = location.longitude.toString()
 
-                        saveData(it.vigilante_id.toLong(), postLatitud, postLongitud, it.cuadrante.toLong())
+                        saveData(it
+                            .vigilante_id
+                            .toLong(),
+                            postLatitud,
+                            postLongitud,
+                            it.cuadrante.toLong())
                     }
                 }
 
@@ -80,20 +95,49 @@ class ServicesExperimental(): AppCompatActivity() {
         })
     }
 
+    /**
+     * Función para obtener el código personal de cada vigilante desde AuthFragment.
+     * @param vigilantId: Id personal de cada vigilante
+     */
+
+    @SuppressLint("LogNotTimber")
+    private fun loadId(): Long {
+        vigilantId = intent.extras!!.getString("vigilantId", null)!!.toLong()
+        if (vigilantId != null) {
+            Log.e("Valor de vigilantId", vigilantId.toString())
+        } else {
+            Log.e("ERROR", "Error al recibir código personal del vigilante")
+        }
+        return vigilantId
+    }
+
+    /**
+     * Funciones dedicadas a obtener el Día, el Mes y el Número de dicho día respectivamente.
+     * Utilizadas en la toolbar.
+     */
+
     private fun getCurrentDay(): String {
-        return SimpleDateFormat("EEEE", Locale.getDefault()).format(Date()).replaceFirstChar { it.toUpperCase() }
+        return SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
+            .replaceFirstChar { it.toUpperCase() }
     }
 
     private fun getCurrentMonth(): String {
-        return SimpleDateFormat("MMMM", Locale.getDefault()).format(Date()).replaceFirstChar { it.toUpperCase() }
+        return SimpleDateFormat("MMMM", Locale.getDefault()).format(Date())
+            .replaceFirstChar { it.toUpperCase() }
     }
 
     private fun getCurrentDayNumber(): String {
-        return SimpleDateFormat("d", Locale.getDefault()).format(Date()).replaceFirstChar { it.toUpperCase() }
+        return SimpleDateFormat("d", Locale.getDefault()).format(Date())
+            .replaceFirstChar { it.toUpperCase() }
     }
 
+    /**
+     * Función dedicada a enviar los datos en función del item elegido del RecyclerView por el vigilante.
+     * Enviados a VigilantActivity y posteriormente se hará la llamada @POST.
+     */
+
     @SuppressLint("LogNotTimber")
-    private fun saveData(vigilanteId: Long, latitud: String, longitud: String , cuadranteId: Long) {
+    private fun saveData(vigilanteId: Long, latitud: String, longitud: String, cuadranteId: Long) {
         val sharedPreferences = getSharedPreferences("datosPost", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
 

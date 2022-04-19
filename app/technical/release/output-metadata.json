@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 7,
-      "versionName": "2.7",
-      "outputFile": "v2.7 (7)-technical-release.apk"
+      "versionCode": 8,
+      "versionName": "2.8",
+      "outputFile": "v2.8 (8)-technical-release.apk"
     }
   ]
 }
