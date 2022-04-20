@@ -52,6 +52,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth) {
     private fun onUserLogged(user: User) {
         val intentServicesExperimental = Intent(activity, ServicesExperimental::class.java)
         intentServicesExperimental.putExtra("vigilantId", user.id.toString())
+        intentServicesExperimental.putExtra("vigilantCode", binding.editCode.text.toString())
         startActivity(intentServicesExperimental)
     }
 }

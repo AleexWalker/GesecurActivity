@@ -1,5 +1,7 @@
 package com.gesecur.app.ui.vigilant.services
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +12,22 @@ import com.gesecur.app.R
 class ServicesAdapter (private val workList: ArrayList<ServicesCard>,
 private val clickListener: (ServicesCard) -> Unit): RecyclerView.Adapter<ServicesAdapter.MyViewHolder>(){
 
+    /**
+     * Clase dedicada a cargar el adaptador en el RecyclerView desde los datos recibidos desde el GSON.
+     * @param contrato: (GSON) -> contrato_servicio_id -> (TextView) tv_identifierx
+     * @param servicio: (GSON) -> descripcion_contrato -> (TextView) tv_descripcionx
+     * @param localizacion: (GSON) -> hora_ini y hora_fin -> (TextView) tv_hourx
+     * @param horas: (GSON) -> descripcion_contrato_servicio -> (TextView) tv_locationx
+     * @param fecha: (GSON) -> fecha_ini y fecha_fin -> (TextView) tv_datex
+     * @param cuadrante: (GSON) -> cuadrante_id
+     * @param vigilante_id: (GSON) -> vigilante_id
+     */
+
     class MyViewHolder (itemView: View, clickAtPosition: (String) -> Unit): RecyclerView.ViewHolder(itemView){
         val contrato: TextView = itemView.findViewById(R.id.tv_identifierx)
         val servicio: TextView = itemView.findViewById(R.id.tv_descripcionx)
-        val localizacion: TextView = itemView.findViewById(R.id.tv_hourx)
-        val horas: TextView = itemView.findViewById(R.id.tv_locationx)
+        val localizacion: TextView = itemView.findViewById(R.id.tv_locationx)
+        val horas: TextView = itemView.findViewById(R.id.tv_hourx)
         val fechas: TextView = itemView.findViewById(R.id.tv_datex)
         var cuadrante = String()
         var vigilante_id = String()
@@ -32,6 +45,7 @@ private val clickListener: (ServicesCard) -> Unit): RecyclerView.Adapter<Service
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = workList[position]
         holder.contrato.text = currentItem.contrato
@@ -42,9 +56,17 @@ private val clickListener: (ServicesCard) -> Unit): RecyclerView.Adapter<Service
         holder.cuadrante = currentItem.cuadrante
         holder.vigilante_id = currentItem.vigilante_id
 
+        /**
+         * Obtenemos los datos del item seleccionado del RecyclerView
+         */
+
         holder.itemView.setOnClickListener {
-            clickListener(workList[position])
+            clickListener(workList[0])
         }
+
+        if (position == 0)
+            holder.itemView.setBackgroundColor(Color.WHITE)
+
     }
 
     override fun getItemCount(): Int {

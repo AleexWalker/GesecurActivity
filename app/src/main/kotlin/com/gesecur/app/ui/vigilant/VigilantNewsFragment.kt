@@ -1,16 +1,19 @@
 package com.gesecur.app.ui.vigilant
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.gesecur.app.R
+import com.gesecur.app.databinding.CustomAlertDialogBinding
 import com.gesecur.app.databinding.FragmentVigilantNewsBinding
 import com.gesecur.app.domain.models.NewsRegistry
 import com.gesecur.app.ui.common.base.BaseFragment
@@ -21,8 +24,8 @@ import com.gesecur.app.utils.getCurrentLocation
 import com.gesecur.app.utils.showAlert
 import com.gesecur.app.utils.toToolbarFormat
 import com.gesecur.app.utils.toast
+import com.google.android.material.card.MaterialCardView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Duration
 import java.time.LocalDate
 import java.util.*
@@ -32,9 +35,12 @@ import java.util.concurrent.TimeUnit
     showToolbar = true)
 class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
 
+    private lateinit var alertBinding: CustomAlertDialogBinding
+
     private val binding by viewBinding(FragmentVigilantNewsBinding::bind)
     private val viewModel by sharedViewModel<VigilantViewModel>()
     private var cuadranteId: Long = 0
+    private var vigilantCode: Long = 0
 
     companion object {
         const val WORK_NAME = "scheduledNewsWork"
@@ -51,7 +57,7 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
             }
 
             btnEndTurn.setOnClickListener {
-                endTurn()
+                generateCustomAlertDialog()
             }
 
             registryContainer.setOnClickListener { viewModel.goToRegistries() }
@@ -67,7 +73,40 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
                 viewModel.addNewRegistry(viewModel.currentTurn.value!!.id, NewsRegistry.TYPE.URGENT)
             }
         }
+    }
 
+    private fun generateCustomAlertDialog() {
+
+        getVigilantData()
+
+        val view = View.inflate(context, R.layout.custom_alert_dialog, null)
+        val builder = context?.let { it1 -> AlertDialog.Builder(it1) }
+        builder!!.setView(view)
+        val dialog = builder.create()
+        dialog.show()
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val buttonFinalize = view.findViewById<MaterialCardView>(R.id.custom_card_finalize)
+        val buttonCancel = view.findViewById<MaterialCardView>(R.id.custom_card_cancel)
+        val editTextVigilantCode = view.findViewById<EditText>(R.id.alertDialogEditText)
+        buttonFinalize.setOnClickListener {
+            if (editTextVigilantCode.text.isEmpty()) {
+                Toast.makeText(context, "¡Introduce un código!", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.e("vigilantCode", vigilantCode.toString())
+                Log.e("editTextVigilantCode", editTextVigilantCode.text.toString())
+                if (vigilantCode.toString() == editTextVigilantCode.text.toString()) {
+                    endTurn()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(context, "¡Código Incorrecto!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        buttonCancel.setOnClickListener {
+            Log.e("Prueba", "Cancel")
+            dialog.dismiss()
+        }
     }
 
     override fun stateManagedViewModels() = arrayListOf(viewModel)
@@ -115,17 +154,22 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
 
     private fun startTurn() {
         showLoadingDialog()
-
-        val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("datosPost", Context.MODE_PRIVATE)
-        cuadranteId = sharedPreferences.getLong("cuadranteId", 0)
-        Log.e("PRUEBA", cuadranteId.toString())
-
+        getVigilantData()
 
         requireActivity().getCurrentLocation {
             it?.let { viewModel.startTurn(it.latitude, it.longitude, cuadranteId) }
 
             manageKeepAliveNotification()
         }
+    }
+
+    private fun getVigilantData() {
+        val sharedPreferences: SharedPreferences =
+            requireContext().getSharedPreferences("datosPost", Context.MODE_PRIVATE)
+        cuadranteId = sharedPreferences.getLong("cuadranteId", 0)
+        vigilantCode = sharedPreferences.getLong("vigilantCode", 0)
+        Log.e("CuadId", cuadranteId.toString())
+        Log.e("VigiId", vigilantCode.toString())
     }
 
     private fun endTurn() {

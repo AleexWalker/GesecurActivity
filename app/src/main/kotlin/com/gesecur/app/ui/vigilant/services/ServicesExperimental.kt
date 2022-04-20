@@ -2,17 +2,25 @@ package com.gesecur.app.ui.vigilant.services
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+
 import com.gesecur.app.databinding.ActivityServicesExperimentalBinding
+import com.gesecur.app.databinding.CustomAlertDialogBinding
+import com.gesecur.app.ui.auth.AuthActivity
 import com.gesecur.app.ui.vigilant.VigilantActivity
 import com.gesecur.app.ui.vigilant.services.repository.Repository
 import com.gesecur.app.utils.getCurrentLocation
+
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,16 +28,19 @@ class ServicesExperimental(): AppCompatActivity() {
 
     private lateinit var binding: ActivityServicesExperimentalBinding
     private lateinit var viewModel: ServicesViewModel
+    private lateinit var bindingAlert: CustomAlertDialogBinding
 
     private var vigilantId: Long = 0
+    private var vigilantCode: Long = 0
 
     @SuppressLint("SetTextI18n", "LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityServicesExperimentalBinding.inflate(layoutInflater)
+        bindingAlert = CustomAlertDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.toolbarTextDay.text = "${getCurrentDay()} ${getCurrentDayNumber()} de ${getCurrentMonth()}"
 
+        binding.toolbarTextDay.text = "${getCurrentDay()} ${getCurrentDayNumber()} de ${getCurrentMonth()}"
         loadId()
 
         /**
@@ -56,20 +67,23 @@ class ServicesExperimental(): AppCompatActivity() {
                         result
                             .result[i]
                             .descripcion_contrato,
-                        "${result.result[i].hora_ini} - ${result.result[i].hora_fin}",
                         result
                             .result[i]
                             .descripcion_contrato_servicio,
-                        "${result.result[i].fecha_ini.substring(
-                                5,
-                                10
-                            )
-                        } - ${result.result[i].fecha_fin.substring(5, 10)}",
+                        "${result.result[i].hora_ini} - ${result.result[i].hora_fin}",
+                        "${result.result[i].fecha_ini.substring(8,10)}/${result.result[i].fecha_ini.substring(5,7)} - ${result.result[i].fecha_fin.substring(8, 10)}/${result.result[i].fecha_fin.substring(5,7)}",
                         result.result[i].cuadrante_id.toString(),
                         result.result[i].vigilante_id.toString()
                     )
                 )
             }
+
+            /**
+             * @param adaptador: Clase serviceAdapater (onClickListener()) para que al hacer click en un item del RecyclerView guarde la información y
+             * posteriormente al iniciar un turno realice una llamada @POST con la información aportada.
+             * @param getCurrentLocation: Función de app.gesecur mediante la cual podemos obtener la ubicación.
+             * @fun saveData: Función para enviar y guardar dichos datos.
+             */
 
             val adaptador = ServicesAdapter(itemWorkServices) {
 
@@ -78,9 +92,7 @@ class ServicesExperimental(): AppCompatActivity() {
                         val postLatitud = location.latitude.toString()
                         val postLongitud = location.longitude.toString()
 
-                        saveData(it
-                            .vigilante_id
-                            .toLong(),
+                        saveData(it.vigilante_id.toLong(),
                             postLatitud,
                             postLongitud,
                             it.cuadrante.toLong())
@@ -93,6 +105,32 @@ class ServicesExperimental(): AppCompatActivity() {
             binding.recyclerServicesVigilant.adapter = adaptador
             binding.recyclerServicesVigilant.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         })
+
+        binding.exitImage.setOnClickListener {
+            generateCustomAlertDialogCloseSession()
+        }
+    }
+
+    private fun generateCustomAlertDialogCloseSession() {
+        val dialogView = AlertDialog.Builder(this)
+        dialogView
+            .setMessage("¿Seguro que deseas cerrar sesión?")
+            .setPositiveButton("SI", DialogInterface.OnClickListener { dialog, which ->
+                finish()
+                startActivity(Intent(this, AuthActivity::class.java))
+                dialog.dismiss()
+            })
+            .setNegativeButton("NO", DialogInterface.OnClickListener { dialog, which ->
+                dialog.dismiss()
+            })
+        val dialog: AlertDialog = dialogView.create()
+        dialog.show()
+
+        val pButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val nButton: Button = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        pButton.setTextColor(Color.BLACK)
+        nButton.setTextColor(Color.BLACK)
     }
 
     /**
@@ -103,6 +141,7 @@ class ServicesExperimental(): AppCompatActivity() {
     @SuppressLint("LogNotTimber")
     private fun loadId(): Long {
         vigilantId = intent.extras!!.getString("vigilantId", null)!!.toLong()
+        vigilantCode = intent.extras!!.getString("vigilantCode", null)!!.toLong()
         if (vigilantId != null) {
             Log.e("Valor de vigilantId", vigilantId.toString())
         } else {
@@ -141,12 +180,13 @@ class ServicesExperimental(): AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("datosPost", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
-        Log.e("DATOS", "$vigilanteId $latitud $longitud $cuadranteId")
+        Log.e("DATOS", "$vigilanteId $latitud $longitud $cuadranteId $vigilantCode")
 
         editor.putLong("vigilanteId", vigilanteId)
         editor.putString("lat", latitud)
         editor.putString("lon", longitud)
         editor.putLong("cuadranteId", cuadranteId)
+        editor.putLong("vigilantCode", vigilantCode)
         editor.apply()
     }
 }
