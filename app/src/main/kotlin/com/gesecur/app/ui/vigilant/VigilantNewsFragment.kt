@@ -75,6 +75,15 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
         }
     }
 
+    /**
+     * Mediante esta función cargamos un Alert Dialog custom a la hora de finalizar el turno.
+     * @param buttonFinalize: Mediante el Material Card, cuando hacemos click en este elemento procedemos a hacer la comprobación
+     * de que el usuario haya introducido un código, o si el código introducido coincide con el suyo y posteriormente si dichos
+     * códigos coinciden el vigilante finalizaría el turno.
+     * @param buttonCancel: Si por equivocación ha hecho click en finalizar turno de esta manera volverá a la pestaña principal.
+     * @param ediTextVigilantCode: Recogemos el código introducido por el vigilante.
+     */
+
     private fun generateCustomAlertDialog() {
 
         getVigilantData()
@@ -89,9 +98,10 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
         val buttonFinalize = view.findViewById<MaterialCardView>(R.id.custom_card_finalize)
         val buttonCancel = view.findViewById<MaterialCardView>(R.id.custom_card_cancel)
         val editTextVigilantCode = view.findViewById<EditText>(R.id.alertDialogEditText)
+
         buttonFinalize.setOnClickListener {
             if (editTextVigilantCode.text.isEmpty()) {
-                Toast.makeText(context, "¡Introduce un código!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "¡Introduce tu código de vigilante!", Toast.LENGTH_SHORT).show()
             } else {
                 Log.e("vigilantCode", vigilantCode.toString())
                 Log.e("editTextVigilantCode", editTextVigilantCode.text.toString())
@@ -103,6 +113,7 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
                 }
             }
         }
+
         buttonCancel.setOnClickListener {
             Log.e("Prueba", "Cancel")
             dialog.dismiss()
@@ -162,6 +173,12 @@ class VigilantNewsFragment : BaseFragment(R.layout.fragment_vigilant_news) {
             manageKeepAliveNotification()
         }
     }
+
+    /**
+     * Función para recoger los datos envíados de la Activity anterior.
+     * @param cuadranteId: Obtenemos los datos del cuadrante del trabajo envíados por la Activity anterior mediante un SharedPreferences.
+     * @param vigilantCode: Obtenemos el código introducido al comienzo por el vigilante y posteriormente lo comparamos al finalizar el turno.
+     */
 
     private fun getVigilantData() {
         val sharedPreferences: SharedPreferences =

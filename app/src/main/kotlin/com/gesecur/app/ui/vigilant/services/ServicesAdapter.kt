@@ -57,12 +57,27 @@ private val clickListener: (ServicesCard) -> Unit): RecyclerView.Adapter<Service
         holder.vigilante_id = currentItem.vigilante_id
 
         /**
-         * Obtenemos los datos del item seleccionado del RecyclerView
+         * Primer método: Permitir sólo hacer onClick() en el primer item del RecyclerView.
+         * Segundo método (comentado): Permitir onClick() en cualquier posición, pero que al hacer onClick() entre al primer item siempre.
+         * Tercer método (comentado): Permitido hacer onClick() en cualquier item del RecyclerView
          */
 
         holder.itemView.setOnClickListener {
-            clickListener(workList[0])
+            if (position == 0)
+                clickListener(workList[position])
         }
+
+        /**
+         * holder.itemView.setOnClickListener {
+         *      clickListener(workList[0])
+         * }
+         */
+
+        /**
+         * holder.itemView.setOnClickListener {
+         *      clickListener(workList[position])
+         * }
+         */
 
         if (position == 0)
             holder.itemView.setBackgroundColor(Color.WHITE)
