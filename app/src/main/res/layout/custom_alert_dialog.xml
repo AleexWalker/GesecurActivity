@@ -46,8 +46,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="10dp"
-
                 android:autofillHints="username"
                 android:backgroundTint="@color/cardview_dark_background"
                 android:hint="Código personal de vigilante"
@@ -55,10 +53,12 @@
 
                 android:minHeight="48dp"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/alertDialogTitle"
 
+                app:layout_constraintEnd_toEndOf="@+id/alertDialogTitle"
                 app:layout_constraintStart_toStartOf="@+id/alertDialogTitle"
-                app:layout_constraintTop_toBottomOf="@+id/alertDialogTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/alertDialogTitle"
+
+                android:layout_marginTop="15dp"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/custom_card_cancel"
@@ -113,7 +113,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/alertDialogEditText"
 
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
