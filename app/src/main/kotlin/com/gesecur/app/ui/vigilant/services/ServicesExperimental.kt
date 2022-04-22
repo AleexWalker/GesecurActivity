@@ -8,9 +8,13 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
+import androidx.core.view.size
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -104,6 +108,11 @@ class ServicesExperimental(): AppCompatActivity() {
 
             binding.recyclerServicesVigilant.adapter = adaptador
             binding.recyclerServicesVigilant.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+
+            Log.e("Nº Items", adaptador.itemCount.toString())
+
+            if (adaptador.itemCount == 0)
+                binding.textEmptyWorklist.visibility = View.VISIBLE
         })
 
         binding.exitImage.setOnClickListener {

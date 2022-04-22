@@ -64,7 +64,7 @@ private val clickListener: (ServicesCard) -> Unit): RecyclerView.Adapter<Service
 
         holder.itemView.setOnClickListener {
             if (position == 0)
-                clickListener(workList[position])
+                clickListener(workList[0])
         }
 
         /**

@@ -72,6 +72,21 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"/>
 
+    <TextView
+        android:id="@+id/textEmptyWorklist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sin servicios disponibles actualmente."
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:textSize="20dp"
+
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:layout_marginTop="20dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerServicesVigilant"
         android:layout_width="match_parent"
